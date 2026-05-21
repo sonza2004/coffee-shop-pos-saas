@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../../config/prisma';
+import { createOrderService } from './order.service';
 
 // =========================
 // CREATE ORDER
@@ -8,34 +9,7 @@ export async function createOrder(req: Request, res: Response) {
   try {
     const { userId, items } = req.body;
 
-    let totalAmount = 0;
-
-    for (const item of items) {
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-      });
-
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-
-      totalAmount += product.price * item.qty;
-    }
-
-    const order = await prisma.order.create({
-      data: {
-        userId,
-        totalAmount,
-        items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            qty: item.qty,
-            price: item.price,
-          })),
-        },
-      },
-      include: { items: true },
-    });
+    const order = await createOrderService(userId, items);
 
     return res.json(order);
   } catch (err) {
