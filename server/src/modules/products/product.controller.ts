@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
-import prisma from '../../config/prisma';
+import {
+  getProductsService,
+  createProductService,
+  updateProductService
+} from './product.service';
 
 // =========================
 // GET ALL PRODUCTS
 // =========================
 export async function getProducts(req: Request, res: Response) {
   try {
-    const products = await prisma.product.findMany({
-      where: { isActive: true },
-    });
-
+    const products = await getProductsService();
     return res.json(products);
   } catch (err) {
     return res.status(500).json({ message: 'Failed to fetch products' });
@@ -21,17 +22,7 @@ export async function getProducts(req: Request, res: Response) {
 // =========================
 export async function createProduct(req: Request, res: Response) {
   try {
-    const { name, price, stockQty, imageUrl } = req.body;
-
-    const product = await prisma.product.create({
-      data: {
-        name,
-        price,
-        stockQty,
-        imageUrl,
-      },
-    });
-
+    const product = await createProductService(req.body);
     return res.json(product);
   } catch (err) {
     return res.status(500).json({ message: 'Failed to create product' });
@@ -44,19 +35,7 @@ export async function createProduct(req: Request, res: Response) {
 export async function updateProduct(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { name, price, stockQty, imageUrl, isActive } = req.body;
-
-    const product = await prisma.product.update({
-      where: { id },
-      data: {
-        name,
-        price,
-        stockQty,
-        imageUrl,
-        isActive,
-      },
-    });
-
+    const product = await updateProductService(id, req.body);
     return res.json(product);
   } catch (err) {
     return res.status(500).json({ message: 'Failed to update product' });
