@@ -10,6 +10,7 @@ import productRoutes from './modules/products/product.routes';
 import inventoryRoutes from './modules/inventory/inventory.routes';
 import paymentRoutes from './modules/payments/payment.routes';
 import orderRoutes from './modules/orders/order.routes';
+import financeRoutes from './modules/finance/finance.routes';
 
 dotenv.config();
 
@@ -38,11 +39,7 @@ app.use('/products', productRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/payments', paymentRoutes);
 app.use('/orders', orderRoutes);
-
-// =========================
-// TODO: Future Modules
-// =========================
-// app.use('/finance', financeRoutes);
+app.use('/finance', financeRoutes);
 
 // =========================
 // Error Handler
