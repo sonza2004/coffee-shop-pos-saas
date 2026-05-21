@@ -45,3 +45,21 @@ export async function updateProduct(req: AuthRequest, res: Response) {
     return res.status(500).json({ error: 'Failed to update product' });
   }
 }
+
+export async function deleteProduct(req: AuthRequest, res: Response) {
+  try {
+    if (req.user?.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const { id } = req.params;
+
+    const product = await updateProductService(id, {
+      isActive: false
+    });
+
+    return res.json({ data: product });
+  } catch {
+    return res.status(500).json({ error: 'Failed to delete product' });
+  }
+}
