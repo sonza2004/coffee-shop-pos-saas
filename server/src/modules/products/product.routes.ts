@@ -1,11 +1,16 @@
 import { Router } from 'express';
-import { getProducts, createProduct, updateProduct } from './product.controller';
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct
+} from './product.controller';
 import { authenticate, authorize } from '../../middleware/auth.middleware';
 
 const router = Router();
 
 // =========================
-// PUBLIC / BASIC ACCESS
+// PUBLIC
 // =========================
 router.get('/', getProducts);
 
@@ -14,5 +19,6 @@ router.get('/', getProducts);
 // =========================
 router.post('/', authenticate, authorize(['admin']), createProduct);
 router.put('/:id', authenticate, authorize(['admin']), updateProduct);
+router.delete('/:id', authenticate, authorize(['admin']), deleteProduct);
 
 export default router;
