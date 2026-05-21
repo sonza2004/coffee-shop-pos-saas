@@ -5,39 +5,43 @@ import {
   updateProductService
 } from './product.service';
 
-// =========================
-// GET ALL PRODUCTS
-// =========================
+interface AuthRequest extends Request {
+  user?: any;
+}
+
 export async function getProducts(req: Request, res: Response) {
   try {
     const products = await getProductsService();
-    return res.json(products);
-  } catch (err) {
-    return res.status(500).json({ message: 'Failed to fetch products' });
+    return res.json({ data: products });
+  } catch {
+    return res.status(500).json({ error: 'Failed to fetch products' });
   }
 }
 
-// =========================
-// CREATE PRODUCT
-// =========================
-export async function createProduct(req: Request, res: Response) {
+export async function createProduct(req: AuthRequest, res: Response) {
   try {
+    if (req.user?.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
     const product = await createProductService(req.body);
-    return res.json(product);
-  } catch (err) {
-    return res.status(500).json({ message: 'Failed to create product' });
+    return res.json({ data: product });
+  } catch {
+    return res.status(500).json({ error: 'Failed to create product' });
   }
 }
 
-// =========================
-// UPDATE PRODUCT
-// =========================
-export async function updateProduct(req: Request, res: Response) {
+export async function updateProduct(req: AuthRequest, res: Response) {
   try {
+    if (req.user?.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
     const { id } = req.params;
     const product = await updateProductService(id, req.body);
-    return res.json(product);
-  } catch (err) {
-    return res.status(500).json({ message: 'Failed to update product' });
+
+    return res.json({ data: product });
+  } catch {
+    return res.status(500).json({ error: 'Failed to update product' });
   }
 }
