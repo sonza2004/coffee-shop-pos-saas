@@ -4,7 +4,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
-// Load env
+// Routes
+import authRoutes from './modules/auth/auth.routes';
+
 dotenv.config();
 
 const app = express();
@@ -25,9 +27,13 @@ app.get('/health', (req, res) => {
 });
 
 // =========================
-// TODO: Route Modules
+// Module Routes
 // =========================
-// app.use('/auth', authRoutes);
+app.use('/auth', authRoutes);
+
+// =========================
+// TODO: Future Modules
+// =========================
 // app.use('/products', productRoutes);
 // app.use('/orders', orderRoutes);
 // app.use('/payments', paymentRoutes);
@@ -35,7 +41,7 @@ app.get('/health', (req, res) => {
 // app.use('/finance', financeRoutes);
 
 // =========================
-// Error Handler (basic)
+// Error Handler
 // =========================
 app.use((err: any, req: any, res: any, next: any) => {
   console.error(err);
